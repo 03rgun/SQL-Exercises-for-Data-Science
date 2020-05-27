@@ -1,7 +1,7 @@
 # Subqueries and Joins
 All of the questions you'll see here pull from the open source Chinook Database. You can see the ER Diagram below. 
 \
-![Chinook Database](https://d3c33hcgiwev3.cloudfront.net/imageAssetProxy.v1/UAPENoOVEei4RQ5L9j9nDA_5042a1f0839511e8beb2b5b4ae9fa29a_ER-Diagram.png?expiry=1590537600000&hmac=F6069X-gIeuKg7KXZEgkITK_jMVhDRrS3zIxXheMSVs)
+![Chinook Database](https://cdn.sqlitetutorial.net/wp-content/uploads/2015/11/sqlite-sample-database-color.jpg)
 \
 \
 **1. How many albums does the artist Led Zeppelin have?** 
