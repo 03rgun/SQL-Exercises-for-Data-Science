@@ -1,4 +1,4 @@
-# Modifying and Analyzing Data - Part 1
+# Modifying and Analyzing Data
 All of the questions you'll see here pull from the open source Chinook Database. You can see the ER Diagram below. 
 \
 ![Chinook Database](https://ucde-rey.s3.amazonaws.com/DSV1015/ChinookDatabaseSchema.png)
