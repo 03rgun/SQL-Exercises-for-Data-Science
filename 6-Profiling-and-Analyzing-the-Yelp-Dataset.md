@@ -4,7 +4,7 @@ We will be using a dataset from a US-based organization called Yelp, which provi
 \
 The first part includes a series of questions regarding the data to help you profile and better understand the data. I will come up with my own question for analysis and will prepare a dataset for the analysis I choose to do in the second part. 
 \
-![Yelp Dataset ER Diagram](https://d3c33hcgiwev3.cloudfront.net/imageAssetProxy.v1/hOlYbrgyEeeTsRKxhJ5OZg_517578844a2fd129650492eda3186cd1_YelpERDiagram.png?expiry=1593043200000&hmac=19CBdLl4W5aKRh-7rij9ZKfe63Ab7BpHmink11z2t08)
+![Yelp Dataset ER Diagram](https://miro.medium.com/max/1644/1*FCi842EUpc1Fgfgmwdkrsw.png)
 
 ## Part 1: Yelp Dataset Profiling and Understanding
 \
@@ -281,4 +281,172 @@ LIMIT 10;
 | -9da1xk7zgnnfO1uTVYGkA | Fran      |  124 |
 | -lh59ko3dxChBSZ9U7LfUw | Lissa     |  120 |
 +------------------------+-----------+------+
+```
+## Part 2: Inferences and Analysis
+\
+**1. Pick one city and category of your choice and group the businesses in that city or category by their overall star rating. Compare the businesses with 2-3 stars to the businesses with 4-5 stars and answer the following questions. Include your code.** 
+\
+I've selected city as "Phoenix" and category as "Restaurants". 
+\
+\
+**i. Do the two groups you chose to analyze have a different distribution of hours?** 
+\
+Yes. Restaurants that has 2-3 stars are opens at 5:00 to 11:00 and closes too late around 0:00 to 2:00. They are open like 19 hours in a day. Restaurants that has 4-5 stars are opens around 11.00 and closes way before compared to 2-3 stars restaurants. They are usually stays open around 5-9 hours in a day.  
+\
+**ii. Do the two groups you chose to analyze have a different number of reviews?**
+\
+No. In my case (selected category and city) each group has 2 businesses. Either one of them has higher and lower reviews in each group.  
+\
+**iii. Are you able to infer anything from the location data provided between these two groups? Explain.**
+\
+By looking at the address, the 4-5 stars restaruants are in East side of Phoenix. And they are all in the same state.
+\
+\
+*Code*
+```SQL
+SELECT b.id, b.stars, h.hours, b.review_count, b.neighborhood, b.state,b.address,
+--case part is not that necessary actually. 
+	CASE 
+		WHEN b.stars BETWEEN 2.0 AND 3.0 THEN "2-3 stars"
+		WHEN b.stars BETWEEN 4.0 AND 5.0 THEN "4-5 stars"
+		ELSE "other"
+	END star_range
+FROM 
+	business b 
+		INNER JOIN category c ON b.id = c.business_id 
+		INNER JOIN hours h ON b.id = h.business_id
+WHERE b.city = "Phoenix" AND c.category = "Restaurants"
+GROUP BY b.stars, h.hours;
+```
+*Result*
+```
++------------------------+-------+-----------------------+--------------+--------------+-------+-------------------------+------------+
+| id                     | stars | hours                 | review_count | neighborhood | state | address                 | star_range |
++------------------------+-------+-----------------------+--------------+--------------+-------+-------------------------+------------+
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Friday|5:00-0:00      |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Monday|5:00-23:00     |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Saturday|5:00-0:00    |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Sunday|5:00-23:00     |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Thursday|5:00-23:00   |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Tuesday|5:00-23:00    |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 1Ds8V2c7LlwSAA3O-9f4cA |   2.0 | Wednesday|5:00-23:00  |            8 |              | AZ    | 1850 S 7th St           | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Friday|11:00-2:00     |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Monday|11:00-0:00     |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Saturday|9:00-2:00    |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Sunday|9:00-0:00      |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Thursday|11:00-2:00   |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Tuesday|11:00-0:00    |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 2JV0xGXsszojof2BuEt_hw |   3.0 | Wednesday|11:00-0:00  |           60 |              | AZ    | 751 E Union Hls Dr      | 2-3 stars  |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Friday|10:00-22:00    |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Monday|10:00-22:00    |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Saturday|10:00-22:00  |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Sunday|10:00-22:00    |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Thursday|10:00-22:00  |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Tuesday|10:00-22:00   |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 01xXe2m_z048W5gcBFpoJA |   3.5 | Wednesday|10:00-22:00 |           63 |              | AZ    | 2641 N 44th St, Ste 100 | other      |
+| 2skQeu3C36VCiB653MIfrw |   4.0 | Friday|11:00-22:00    |          431 |              | AZ    | 3375 E Shea Blvd        | 4-5 stars  |
+| 2skQeu3C36VCiB653MIfrw |   4.0 | Monday|11:00-22:00    |          431 |              | AZ    | 3375 E Shea Blvd        | 4-5 stars  |
+| 2skQeu3C36VCiB653MIfrw |   4.0 | Saturday|11:00-22:00  |          431 |              | AZ    | 3375 E Shea Blvd        | 4-5 stars  |
+| 2skQeu3C36VCiB653MIfrw |   4.0 | Sunday|11:00-22:00    |          431 |              | AZ    | 3375 E Shea Blvd        | 4-5 stars  |
++------------------------+-------+-----------------------+--------------+--------------+-------+-------------------------+------------+
+(Output limit exceeded, 25 of 35 total rows shown)
+```
+\
+**2. Group business based on the ones that are open and the ones that are closed. What differences can you find between the ones that are still open and the ones that are closed? List at least two differences and the SQL code you used to arrive at your answer.**
+\
+\
+**i. Difference 1:** 
+\
+By looking at non-zero useful reviews; the open restaurants' average stars are slightly higher.
+\
+\
+**ii. Difference 2:**
+\
+By looking at non-zero useful reviews; open restaurants' have an higher useful average rate. 
+\
+\
+**iii. Are you able to infer anything from the location data provided between these two groups? Explain.**
+\
+By looking at the address, the 4-5 stars restaruants are in East side of Phoenix. And they are all in the same state.
+\
+\
+*Code*
+```SQL
+SELECT COUNT(b.id) as count, AVG(b.stars), b.is_open, AVG(r.useful)
+FROM business b INNER JOIN review r ON b.id = r.business_id
+WHERE r.useful != 0
+GROUP BY b.is_open;
+```
+*Result*
+```
++-------+---------------+---------+---------------+
+| count |  AVG(b.stars) | is_open | AVG(r.useful) |
++-------+---------------+---------+---------------+
+|    34 |           3.5 |       0 | 2.02941176471 |
+|   210 | 3.77380952381 |       1 | 2.30476190476 |
++-------+---------------+---------+---------------+
+```
+\
+**3. For this last part of your analysis, you are going to choose the type of analysis you want to conduct on the Yelp dataset and are going to prepare the data for analysis.**
+\
+Ideas for analysis include: Parsing out keywords and business attributes for sentiment analysis, clustering businesses to find commonalities or anomalies between them, predicting the overall star rating for a business, predicting the number of fans a user will have, and so on. These are just a few examples to get you started, so feel free to be creative and come up with your own problem you want to solve. Provide answers, in-line, to all of the following:
+\
+\
+**i. Indicate the type of analysis you chose to do:** 
+\
+I wanted to look up which businesses are more succesful than others by looking at the attributes. However even though some business are in food or restraurant categories still their "GoodForMeal" values are all 0. So this query doesn't include those.
+\
+\
+**ii. Write 1-2 brief paragraphs on the type of data you will need for your analysis and why you chose that data:** 
+\
+Before starting, I included average values for all businesses for comparision. Just by looking at all businesses (first 3 columns) versus the restaurants' average values. They have better star rating than our dataset. Some groups in our dataset has 2-3 businesses so I believe it's not fair to compare them.      
+I parsed json values in attribute table and created columns for each. So just by looking those, companies that serve lunch and dinner (fair amount of sample) have higher stars, reviews and they are all still open. Businesses that serves lunch only are better at stars but most of them are closed. 
+So, by looking our analysis, serving lunch and dinner is the best option for businesses in food category.
+\
+\
+*Code*
+```SQL
+SELECT 
+  (SELECT AVG(stars) FROM business) AS star_all, 
+  (SELECT AVG(is_open) FROM business) AS open_all, 
+  (SELECT AVG(review_count) FROM business) AS review_all, 
+  COUNT(b.id) AS count, 
+  AVG(b.stars) AS avg_star, 
+  AVG(b.is_open) AS avg_open, 
+  AVG(review_count) as avg_review, 
+  CASE
+    WHEN a.value LIKE '%"dessert": true%' THEN 1 ELSE 0 
+  END is_dessert,
+  CASE
+    WHEN a.value LIKE '%"latenight": true%' THEN 1 ELSE 0 
+  END is_latenight,
+  CASE
+    WHEN a.value LIKE '%"lunch": true%' THEN 1 ELSE 0 
+  END is_lunch,
+  CASE
+    WHEN a.value LIKE '%"dinner": true%' THEN 1 ELSE 0
+  END is_dinner,
+  CASE
+    WHEN a.value LIKE '%"breakfast": true%' THEN 1 ELSE 0 
+  END is_breakfast,
+  CASE 
+    WHEN a.value LIKE '%"brunch": true%' THEN 1 ELSE 0
+  END is_brunch 
+FROM business b INNER JOIN attribute a ON b.id = a.business_id
+INNER JOIN category c ON b.id = c.business_id 
+WHERE a.name = "GoodForMeal"
+GROUP BY is_dessert, is_latenight, is_lunch, is_dinner, is_breakfast, is_brunch;
+```
+*Result*
+```
++----------+----------+------------+-------+---------------+----------------+---------------+------------+--------------+----------+-----------+--------------+-----------+
+| star_all | open_all | review_all | count |      avg_star |       avg_open |    avg_review | is_dessert | is_latenight | is_lunch | is_dinner | is_breakfast | is_brunch |
++----------+----------+------------+-------+---------------+----------------+---------------+------------+--------------+----------+-----------+--------------+-----------+
+|   3.6549 |    0.848 |    30.4561 |    30 | 3.11666666667 | 0.666666666667 |           6.6 |          0 |            0 |        0 |         0 |            0 |         0 |
+|   3.6549 |    0.848 |    30.4561 |     6 |           3.5 |            1.0 |          69.5 |          0 |            0 |        0 |         1 |            0 |         0 |
+|   3.6549 |    0.848 |    30.4561 |    16 |        3.5625 |          0.375 |       46.1875 |          0 |            0 |        1 |         0 |            0 |         0 |
+|   3.6549 |    0.848 |    30.4561 |    36 | 3.51388888889 |            1.0 | 142.611111111 |          0 |            0 |        1 |         1 |            0 |         0 |
+|   3.6549 |    0.848 |    30.4561 |     3 |           3.5 |            1.0 |          83.0 |          0 |            0 |        1 |         1 |            1 |         0 |
+|   3.6549 |    0.848 |    30.4561 |     2 |           2.5 |            1.0 |          28.0 |          0 |            1 |        0 |         0 |            0 |         0 |
++----------+----------+------------+-------+---------------+----------------+---------------+------------+--------------+----------+-----------+--------------+-----------+
 ```
